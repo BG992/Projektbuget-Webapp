@@ -1,0 +1,18 @@
+# Build frontend
+FROM node:18 AS build-client
+WORKDIR /app/client
+COPY client/package*.json ./
+RUN npm install
+COPY client .
+RUN npm run build
+
+# Build server
+FROM node:18
+WORKDIR /app
+COPY server/package*.json server/
+RUN cd server && npm install
+COPY server ./server
+COPY --from=build-client /app/client/dist ./server/public
+WORKDIR /app/server
+EXPOSE 3000
+CMD ["npm","start"]
