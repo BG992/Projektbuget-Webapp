@@ -1,5 +1,11 @@
 const Database = require('better-sqlite3');
-const db = new Database('data.db');
+const fs = require('fs');
+const path = require('path');
+
+const dataDir = path.join(__dirname, 'data');
+fs.mkdirSync(dataDir, { recursive: true });
+const dbPath = path.join(dataDir, 'data.db');
+const db = new Database(dbPath);
 db.pragma('foreign_keys = ON');
 db.exec(`
 CREATE TABLE IF NOT EXISTS projects (
