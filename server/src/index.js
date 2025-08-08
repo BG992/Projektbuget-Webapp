@@ -6,7 +6,8 @@ const db = require('./db');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve the built frontend files from the public directory one level up
+app.use(express.static(path.join(__dirname, '../public')));
 
 function getSubBudgetUsed(id){
   const positions = db.prepare('SELECT planned, actual, done FROM positions WHERE subbudget_id = ?').all(id);
