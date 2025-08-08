@@ -81,7 +81,7 @@ app.delete('/api/positions/:id', (req,res)=>{
   res.json({status:'ok'});
 });
 
-app.get('*', (_, res) =>
+app.use((_, res) =>
   res.sendFile(path.join(__dirname, '../public/index.html'))
 );
 
