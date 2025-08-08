@@ -11,6 +11,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
 
+const euro = new Intl.NumberFormat('de-DE', {
+  style: 'currency',
+  currency: 'EUR',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+});
+
+const formatEuro = (value) => euro.format(value ?? 0);
+
 function App() {
   const [projects, setProjects] = useState([]);
   const [projectForm, setProjectForm] = useState({ name: '', total_budget: '' });
@@ -233,7 +242,7 @@ function Project({ project, onChange, onDelete, onEdit }) {
       </Tabs>
       {tab === 0 && (
         <>
-          <Typography variant="subtitle1">{`${used}/${project.total_budget}`}</Typography>
+          <Typography variant="subtitle1">{`${formatEuro(used)} / ${formatEuro(project.total_budget)}`}</Typography>
           <LinearProgress variant="determinate" value={percent} sx={{ mb: 2 }} />
           <Box sx={{ mb: 2 }}>
             <IconButton onClick={() => setShowSubForm(v => !v)} size="small"><AddIcon /></IconButton>
@@ -273,9 +282,10 @@ function Project({ project, onChange, onDelete, onEdit }) {
       )}
       {tab === 1 && (
         <Box sx={{ p: 2 }}>
-          <Typography>Gesamtbudget: {project.total_budget}</Typography>
-          <Typography>Verwendet: {used}</Typography>
-          <Typography>Rest: {project.total_budget - used}</Typography>
+          <Typography>Gesamtbudget: {formatEuro(project.total_budget)}</Typography>
+          <Typography>Verwendet: {formatEuro(used)}</Typography>
+          <Typography>Rest: {formatEuro(project.total_budget - used)}</Typography>
+          <LinearProgress variant="determinate" value={percent} sx={{ my: 2 }} />
           <Typography>Teilbudgets: {project.subbudgets.length}</Typography>
           <Typography>Positionen erledigt: {donePositions}/{totalPositions}</Typography>
         </Box>
@@ -374,7 +384,7 @@ function SubBudget({ sub, onChange, onDelete, onEdit }) {
                 </Box>
               </Box>
               <LinearProgress variant="determinate" value={percent} />
-              <Typography variant="caption">{`${sub.used}/${sub.budget}`}</Typography>
+              <Typography variant="caption">{`${formatEuro(sub.used)} / ${formatEuro(sub.budget)}`}</Typography>
             </Box>
           </AccordionSummary>
           <AccordionDetails>
@@ -423,7 +433,7 @@ function SubBudget({ sub, onChange, onDelete, onEdit }) {
                 >
                   <ListItemText
                     primary={p.name}
-                    secondary={`${p.done ? 'Abgeschlossen' : 'Offen'} - ${p.done ? p.actual : p.planned}`}
+                    secondary={`${p.done ? 'Abgeschlossen' : 'Offen'} - ${formatEuro(p.done ? p.actual : p.planned)}`}
                   />
                 </ListItem>
               ))}
